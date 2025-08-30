@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import time
 start_time = time.time()
+
 #Estandarization:
 def estadisticas_dataset(X):
   mean = []
@@ -16,24 +17,38 @@ def estadisticas_dataset(X):
 def estandarizar(X, mean, std):
   return (X - mean) / std
 
+#Funcion de undersampling para tener la misma cantidad de statu loan 0 y status loan 1
+def undersampling(X, y):
+  min_class = np.min(y.value_counts())
+  indices_0 = y[y == 0].index
+  indices_1 = y[y == 1].index
+  indices_0 = np.random.choice(indices_0, size=min_class, replace=False)
+  indices_1 = np.random.choice(indices_1, size=min_class, replace=False)
+  indices = np.concatenate([indices_0, indices_1])
+  X_undersampled = X.loc[indices]
+  y_undersampled = y.loc[indices]
+  # Resetear indices:
+  X_undersampled = X_undersampled.reset_index(drop=True)
+  y_undersampled = y_undersampled.reset_index(drop=True)
+  return X_undersampled, y_undersampled
+
 def train_test_split(X, y, train_size):
     if train_size > 1 or train_size <= 0:
         raise ValueError("Agarra un train size válido")
 
     n = len(X)
     train_size = int(train_size * n)
-    test_size = n - train_size
 
     # Shufflear dataset
-    #indices = np.random.permutation(n)
-    #X = X[indices]
-    #y = y[indices]
+    indices = np.random.permutation(n)
+    X = X.iloc[indices]
+    y = y.iloc[indices]
 
     # Split
-    X_train = X[:train_size]
-    y_train = y[:train_size]
-    X_test = X[train_size:]
-    y_test = y[train_size:]
+    X_train = X.iloc[:train_size]
+    y_train = y.iloc[:train_size]
+    X_test = X.iloc[train_size:]
+    y_test = y.iloc[train_size:]
 
     return X_train, y_train, X_test, y_test
 def sigmoid(x): #Array
@@ -147,6 +162,10 @@ def plot_roc_curve(y_true, y_pred_proba):
     plt.grid(True)
     plt.show()
 
+def plot_count_classes(df, column):
+   sns.countplot(x=column, data=df)
+   plt.show()
+
 #Ejecución:
 df = pd.read_csv('loan_data.csv')
 print(df.info())
@@ -183,7 +202,11 @@ X = df_numerico[['person_age', 'person_income', 'loan_amnt',
        'credit_score']]
 
 y = df_numerico['loan_status']
+#Cuantas clases hay:
+plot_count_classes(df_numerico, 'loan_status')
+
 #Probar regresion logistica con df_numerico
+X, y = undersampling(X, y)
 mean, std = estadisticas_dataset(X)
 X_estandarizado = estandarizar(X, mean, std)
 print(X_estandarizado.head())
@@ -191,7 +214,7 @@ print(len(X_estandarizado))
 X_train, y_train, X_test, y_test = train_test_split(X_estandarizado, y, 0.8)
 y_train = y_train.values.reshape(len(y_train), 1)
 y_test = y_test.values.reshape(len(y_test), 1)
-weights, bias, cost_history = logistic_regression(X_train, y_train, 0.01, 1500)
+weights, bias, cost_history = logistic_regression(X_train, y_train, 0.001, 10000)
 print(y_train.shape)
 print("Pesos:", weights)
 print("Bias:", bias)
