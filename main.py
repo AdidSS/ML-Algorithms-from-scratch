@@ -113,7 +113,7 @@ def calculate_metrics(y_true, y_pred):
         'recall': recall,
         'f1_score': f1
     }
-def plot_confusion_matrix(y_true, y_pred, labels=['No Default', 'Default']):
+def plot_confusion_matrix(y_true, y_pred, labels=['Rechazado', 'Aprobado']):
     tp, tn, fp, fn = confusion_matrix(y_true, y_pred)
     cm = np.array([[tn, fp], 
                    [fn, tp]])
@@ -214,7 +214,7 @@ print(len(X_estandarizado))
 X_train, y_train, X_test, y_test = train_test_split(X_estandarizado, y, 0.8)
 y_train = y_train.values.reshape(len(y_train), 1)
 y_test = y_test.values.reshape(len(y_test), 1)
-weights, bias, cost_history = logistic_regression(X_train, y_train, 0.001, 10000)
+weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 100)
 print(y_train.shape)
 print("Pesos:", weights)
 print("Bias:", bias)
