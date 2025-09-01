@@ -5,7 +5,7 @@ import seaborn as sns
 import time
 start_time = time.time()
 
-#Estandarization:
+#Estandarización:
 def estadisticas_dataset(X):
   mean = []
   std = []
@@ -51,6 +51,7 @@ def train_test_split(X, y, train_size):
     y_test = y.iloc[train_size:]
 
     return X_train, y_train, X_test, y_test
+
 def sigmoid(x): #Array
     return 1 / (1 + np.exp(-x)) #Array
 
@@ -78,15 +79,26 @@ def logistic_regression(X, y, learning_rate, epochs):
     #Nuestra hipótesis
     y_predicted = sigmoid(np.dot(X, w) + b)
     cost = log_loss(y, y_predicted)
+    cost_history.append(cost)
+
     # Cálculo del gradiente
-    # Como estamos haciendo la operacion con matrices no es necesario hacer el
-    # ciclo for para iterar los valores de X (m x n)
-    dw = (1 / m) * np.dot(X.T, (y_predicted - y))
-    db = (1 / m) * np.sum(y_predicted - y)
+    dw = np.zeros((n, 1))
+    db = 0
+    
+    for j in range(m):
+      error = y_predicted[j] - y[j]
+      #db = (y_predicted-y)
+      db += error
+      # Actualizar dw para cada característica
+      for k in range(n):
+        #dw = (y_predicted-y)*X
+        dw[k] += error * X.iloc[j, k]
+        
     # Gradiente descendente para optimizar parámetros
+    dw = dw / m
+    db = db / m
     w = w - learning_rate * dw
     b = b - learning_rate * db
-    cost_history.append(cost)
 
   train_time = time.time() - train_start_time
   print(f"\nTiempo de entrenamiento: {train_time:.2f} segundos")
@@ -113,6 +125,7 @@ def calculate_metrics(y_true, y_pred):
         'recall': recall,
         'f1_score': f1
     }
+
 def plot_confusion_matrix(y_true, y_pred, labels=['Rechazado', 'Aprobado']):
     tp, tn, fp, fn = confusion_matrix(y_true, y_pred)
     cm = np.array([[tn, fp], 
