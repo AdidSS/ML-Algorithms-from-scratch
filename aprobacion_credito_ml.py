@@ -189,15 +189,6 @@ df = df.drop(var, axis=1)
 num_vars = ['person_age', 'person_income', 'loan_amnt',
             'loan_int_rate', 'loan_percent_income',
             'credit_score']
-fig, axes = plt.subplots(2, 4, figsize=(16, 8))  # 2 filas, 4 columnas
-axes = axes.flatten()
-
-for i, col in enumerate(num_vars):
-    sns.boxplot(y=df[col], ax=axes[i])
-    axes[i].set_title(col)
-
-plt.tight_layout()
-plt.show()
 
 print(df[df["loan_percent_income"] == 0].count())
 df = df[df["loan_percent_income"] != 0]
@@ -282,6 +273,7 @@ X = df_windsorized[['person_age', 'person_income', 'loan_amnt', 'loan_int_rate',
 y = df_windsorized['loan_status']
 
 # Entrenamiento Con desbalance:
+print("Logistic Regression sin balancear \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X, y, 0.8)
 weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 200)
 print(weights)
@@ -289,6 +281,7 @@ print(bias)
 evaluation_report(X_train, X_val, X_test, weights, bias)
 
 #Con SMOTE
+print("Logistic Regression con SMOTE \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X_SMOTE, y_SMOTE, 0.8)
 weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 200)
 #Hacer las predicciones para el x_test
@@ -309,11 +302,13 @@ plt.title("Cost vs Epocas")
 plt.show()
 
 #Con over sampling
+print("Logistic Regression con Over Sampling \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X_Over, y_Over, 0.8)
 weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 200)
 evaluation_report(X_train, X_val, X_test, weights, bias)
 
 # Implementación de un ensemble method con framework
+print("Random Forest Classifier con SMOTE \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X_SMOTE, y_SMOTE, 0.8)
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
@@ -344,6 +339,7 @@ plt.title('Feature Importance')
 plt.show()
 print(importances)
 
+"""
 #Optimización de hiperparámetros con Grid Search
 param_grid = {
     'n_estimators': [50, 100, 200],
@@ -368,3 +364,5 @@ fpr_train, tpr_train, _ = roc_curve(y_train, y_train_pred)
 fpr_test, tpr_test, _ = roc_curve(y_test, y_test_pred)
 plt.plot(fpr_train, tpr_train, label='Train')
 plt.plot(fpr_test, tpr_test, label='Test')
+#Best parameters found:  {'max_depth': 30, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}
+"""
