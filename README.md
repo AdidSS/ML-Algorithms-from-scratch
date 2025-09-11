@@ -12,8 +12,10 @@ Este proyecto implementa un modelo de machine learning (regresión logística) d
 | **Archivo**   | **Descripción**                                              |
 |---------------|--------------------------------------------------------------|
 | loan_data.csv     | Dataset utilizado para el proyecto          |
-| Machine_Learning_Model_From_Scratch.pdf     | Reporte del proyecto|
+| Machine_Learning_Model_From_Scratch.pdf     | Avance del proyecto|
 | main.py  | Código con la implementación del modelo de ML sin frameworks   |
+| aprobacion_credito_ml.py  | Código final (implementación con y sin framework) |
+| Loan Approval with Machine Learning.pdf   | Reporte Final |
 
 
 
