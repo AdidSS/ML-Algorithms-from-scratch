@@ -3,6 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 import warnings
+import time
 warnings.filterwarnings('ignore')
 from sklearn.model_selection import train_test_split
 #Importar random Forest
@@ -281,9 +282,13 @@ print(bias)
 evaluation_report(X_train, X_val, X_test, weights, bias)
 
 #Con SMOTE
+#Contar tiempo de entrenamiento
+start_time = time.time()
 print("Logistic Regression con SMOTE \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X_SMOTE, y_SMOTE, 0.8)
 weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 200)
+end_time = time.time()
+print("Tiempo de entrenamiento: ", end_time - start_time, " segundos")
 #Hacer las predicciones para el x_test
 y_predicted = sigmoid(np.dot(X_test, weights) + bias)
 #evaluar predicciones:
@@ -308,13 +313,15 @@ weights, bias, cost_history = logistic_regression(X_train, y_train, 0.1, 200)
 evaluation_report(X_train, X_val, X_test, weights, bias)
 
 # Implementación de un ensemble method con framework
+start_time = time.time()
 print("Random Forest Classifier con SMOTE \n")
 X_train, y_train, X_val, y_val, X_test, y_test = train_val_test_split(X_SMOTE, y_SMOTE, 0.8)
 model = RandomForestClassifier(n_estimators=100, random_state=42)
 model.fit(X_train, y_train)
+end_time = time.time()
+print("Tiempo de entrenamiento: ", end_time - start_time, " segundos")
 y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
-print(classification_report(y_test, y_pred))
 sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d', cmap='Blues')
 plt.xlabel('Predicted')
 plt.ylabel('True')
@@ -338,6 +345,21 @@ plt.ylabel('Importance')
 plt.title('Feature Importance')
 plt.show()
 print(importances)
+
+#Evauación en los splits
+y_train_pred = model.predict(X_train)
+y_val_pred = model.predict(X_val)
+y_test_pred = model.predict(X_test)
+print("TRAIN:")
+print(classification_report(y_train, y_train_pred))
+print("VAL:")
+print(classification_report(y_val, y_val_pred))
+print("TEST:")
+print(classification_report(y_test, y_test_pred))
+#Obtener los hiperparametros del modelo
+print("Hiperparámetros del modelo Random Forest:")
+print(model.get_params())
+
 
 """
 #Optimización de hiperparámetros con Grid Search
