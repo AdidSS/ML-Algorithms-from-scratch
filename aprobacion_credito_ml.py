@@ -263,7 +263,7 @@ print(y_Over.value_counts())
 #PODEMOS CAMBIAR A SMOTE u OVER
 X = df_windsorized[['person_age', 'person_income', 'loan_amnt', 'loan_int_rate',
        'loan_percent_income', 'credit_score',
-       'person_home_ownership_MORTGAGE', 'person_home_ownership_OTHER',
+       'person_home_ownership_MORTGAGE',
        'person_home_ownership_OWN', 'person_home_ownership_RENT',
        'loan_intent_DEBTCONSOLIDATION', 'loan_intent_EDUCATION',
        'loan_intent_HOMEIMPROVEMENT', 'loan_intent_MEDICAL',
