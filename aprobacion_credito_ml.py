@@ -6,16 +6,12 @@ import warnings
 import time
 warnings.filterwarnings('ignore')
 from sklearn.model_selection import train_test_split
-#Importar random Forest
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
-#Importar para hacer grid search
 from sklearn.model_selection import GridSearchCV
-#Para desbalance de datos (over sampling)
 from imblearn.over_sampling import RandomOverSampler
-#Para estandarizar datos
 from sklearn.preprocessing import StandardScaler
 from sklearn.metrics import RocCurveDisplay
 from sklearn.metrics import roc_curve
@@ -220,7 +216,6 @@ for j in range(len(df_numerico_estandarizado.columns), len(axes)):
 plt.tight_layout()
 plt.show()
 
-#windsorize numeric columns of df ['person_age', 'person_income', 'loan_amnt', 'loan_int_rate', 'loan_percent_income', 'credit_score']
 windsorizer = Winsorizer(capping_method='gaussian', tail='both', fold=3, variables=['person_age', 'person_income', 'loan_amnt', 'loan_int_rate', 'loan_percent_income', 'credit_score'])
 
 df_windsorized = windsorizer.fit_transform(df)
@@ -375,3 +370,4 @@ print(classification_report(y_test, y_test_pred))
 #Obtener los hiperparametros del modelo
 print("Hiperparámetros del modelo Random Forest:")
 print(model.get_params())
+#Victor Adid Salgado Santana
