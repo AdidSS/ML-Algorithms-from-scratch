@@ -34,30 +34,32 @@ Para ejecutar este proyecto en tu entorno local, sigue estos pasos:
    cd ML-Algorithms-from-scratch
    ```
 2. Crea un entorno virtual:
-En Windows:
-    ```bash
-python -m venv venv
-venv\Scripts\activate
+    En Windows:
+
+   ```bash
+    python -m venv venv
+    venv\Scripts\activate
    ```
 
-En macOS/Linux:
-    ```bash
-python3 -m venv venv
-source venv/bin/activate
+    En macOS/Linux:
+   ```bash
+    python3 -m venv venv
+    source venv/bin/activate
    ```
 
 3. Instala las dependencias:
-    ```bash
-pip install -r requirements.txt
+   ```bash
+    pip install -r requirements.txt
    ```
 
 #### Ejecución:
 Primer modelo de regresión logística:
-    ```bash
- python main.py
-   ```
+
+```bash
+python main.py
+```
 Para ejecutar el análisis completo con implementación desde cero y Random Forest:
-    ```bash
- python aprobacion_credito_ml.py
-    ```
+```bash
+python aprobacion_credito_ml.py
+```
 
