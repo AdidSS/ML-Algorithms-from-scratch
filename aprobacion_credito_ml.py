@@ -106,6 +106,7 @@ def estandarizar(X, mean, std):
 df = pd.read_csv('loan_data.csv')
 
 # Análisis exploratorio:
+print("Análisis exploratorio del dataset: \n")
 print(df.info())
 print("Valores nulos: \n" ,df.isna().sum())
 
@@ -191,6 +192,7 @@ num_vars = ['person_age', 'person_income', 'loan_amnt',
             'loan_int_rate', 'loan_percent_income',
             'credit_score']
 
+print("Valores atípicos para loan percent income: ")
 print(df[df["loan_percent_income"] == 0].count())
 df = df[df["loan_percent_income"] != 0]
 
@@ -202,12 +204,19 @@ df[df_numerico.columns] = df_numerico_estandarizado
 df.head()
 
 #visualización de las distribuciones de df_numerico
-plt.figure(figsize=(16, 8))  # Crea una nueva figura con tamaño específico
 fig, axes = plt.subplots(2, 3, figsize=(16, 8))
 axes = axes.flatten()
+
+# Iterar sobre las columnas para crear histogramas
 for i, col in enumerate(df_numerico_estandarizado.columns):
-    sns.histplot(df_numerico_estandarizado[col], ax=axes[i])
-    axes[i].set_title(col)
+    if i < len(axes):  # Asegurar que no excedemos el número de ejes
+        sns.histplot(df_numerico_estandarizado[col], ax=axes[i])
+        axes[i].set_title(col)
+
+# Ocultar los ejes no utilizados
+for j in range(len(df_numerico_estandarizado.columns), len(axes)):
+    axes[j].set_visible(False)
+    
 plt.tight_layout()
 plt.show()
 
@@ -216,12 +225,19 @@ windsorizer = Winsorizer(capping_method='gaussian', tail='both', fold=3, variabl
 
 df_windsorized = windsorizer.fit_transform(df)
 
-plt.figure(figsize=(16, 8))  # Crea una nueva figura con tamaño específico
 fig, axes = plt.subplots(2, 3, figsize=(16, 8))
 axes = axes.flatten()
+
+# Iterar sobre las columnas para crear histogramas
 for i, col in enumerate(df_numerico_estandarizado.columns):
-    sns.histplot(df_windsorized[col], ax=axes[i])
-    axes[i].set_title(col)
+    if i < len(axes):  # Asegurar que no excedemos el número de ejes
+        sns.histplot(df_windsorized[col], ax=axes[i])
+        axes[i].set_title(col)
+
+# Ocultar los ejes no utilizados
+for j in range(len(df_numerico_estandarizado.columns), len(axes)):
+    axes[j].set_visible(False)
+    
 plt.tight_layout()
 plt.show()
 
@@ -240,26 +256,12 @@ print("Columnas después del encoding: ")
 print(df_windsorized.columns)
 
 # Desbalanceo de los datos
+print("Distribución de loan_status antes del balanceo: ")
 print(df_windsorized['loan_status'].value_counts())
 plt.figure(figsize=(8, 6))  # Crea una nueva figura
 sns.countplot(x='loan_status', data=df_windsorized)
 plt.title('Distribución de loan_status')
 plt.show()
-
-#Oversampling con SMOTE
-smote = SMOTE(random_state=42)
-X = df_windsorized.drop('loan_status', axis=1)
-y = df_windsorized['loan_status']
-X_SMOTE, y_SMOTE = smote.fit_resample(X, y)
-
-#COntar registros
-print(y_SMOTE.value_counts())
-
-#Oversampling duplicando los registros de la clase minoritaria
-ros = RandomOverSampler(random_state=42)
-X_Over, y_Over = ros.fit_resample(X, y)
-
-print(y_Over.value_counts())
 
 #PODEMOS CAMBIAR A SMOTE u OVER
 X = df_windsorized[['person_age', 'person_income', 'loan_amnt', 'loan_int_rate',
@@ -267,11 +269,25 @@ X = df_windsorized[['person_age', 'person_income', 'loan_amnt', 'loan_int_rate',
        'person_home_ownership_MORTGAGE',
        'person_home_ownership_OWN', 'person_home_ownership_RENT',
        'loan_intent_DEBTCONSOLIDATION', 'loan_intent_EDUCATION',
-       'loan_intent_HOMEIMPROVEMENT', 'loan_intent_MEDICAL',
-       'loan_intent_PERSONAL', 'loan_intent_VENTURE',
+       'loan_intent_HOMEIMPROVEMENT', 'loan_intent_MEDICAL','loan_intent_VENTURE',
        'previous_loan_defaults_on_file_No']]
 
 y = df_windsorized['loan_status']
+
+#Oversampling con SMOTE
+smote = SMOTE(random_state=42)
+X_SMOTE, y_SMOTE = smote.fit_resample(X, y)
+
+#COntar registros
+print("Distribución de loan_status después del balanceo con SMOTE: ")
+print(y_SMOTE.value_counts())
+
+#Oversampling duplicando los registros de la clase minoritaria
+ros = RandomOverSampler(random_state=42)
+X_Over, y_Over = ros.fit_resample(X, y)
+
+print("Distribución de loan_status después del balanceo con Over Sampling: ")
+print(y_Over.value_counts())
 
 # Entrenamiento Con desbalance:
 print("Logistic Regression sin balancear \n")
@@ -359,32 +375,3 @@ print(classification_report(y_test, y_test_pred))
 #Obtener los hiperparametros del modelo
 print("Hiperparámetros del modelo Random Forest:")
 print(model.get_params())
-
-
-"""
-#Optimización de hiperparámetros con Grid Search
-param_grid = {
-    'n_estimators': [50, 100, 200],
-    'max_depth': [None, 10, 20, 30],
-    'min_samples_split': [2, 5, 10],
-    'min_samples_leaf': [1, 2, 4]
-}
-grid_search = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, n_jobs=-1, verbose=2)
-grid_search.fit(X_train, y_train)
-print("Best parameters found: ", grid_search.best_params_)
-best_model = grid_search.best_estimator_
-y_pred = best_model.predict(X_test)
-sns.heatmap(confusion_matrix(y_test, y_pred), annot=True, fmt='d', cmap='Blues')
-plt.xlabel('Predicted')
-plt.ylabel('True')
-plt.show()
-print(evaluation_report(X_train, X_val, X_test, weights, bias))
-#Plot the ROC curve for the train and test model
-y_train_pred = model.predict_proba(X_train)[:, 1]
-y_test_pred = model.predict_proba(X_test)[:, 1]
-fpr_train, tpr_train, _ = roc_curve(y_train, y_train_pred)
-fpr_test, tpr_test, _ = roc_curve(y_test, y_test_pred)
-plt.plot(fpr_train, tpr_train, label='Train')
-plt.plot(fpr_test, tpr_test, label='Test')
-#Best parameters found:  {'max_depth': 30, 'min_samples_leaf': 1, 'min_samples_split': 2, 'n_estimators': 200}
-"""

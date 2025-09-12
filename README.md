@@ -4,7 +4,7 @@
 
 ## Descripción General del Proyecto
 
-Este proyecto implementa un modelo de machine learning (regresión logística) desde cero para clasificar solicitudes de préstamos bancarios como aprobadas o rechazadas. El objetivo es clasificar las solicitudes calculando la probabilidad de que un préstamo sea aprobado basándose en diversas características de la solicitud, como ingresos del solicitante, puntaje crediticio, monto del préstamo y otros factores relevantes.
+Este proyecto implementa un modelo de machine learning (regresión logística) desde cero y un random forest con scikit learn, para clasificar solicitudes de préstamos bancarios como aprobadas o rechazadas. El objetivo es clasificar las solicitudes calculando la probabilidad de que un préstamo sea aprobado basándose en diversas características de la solicitud, como ingresos del solicitante, puntaje crediticio, monto del préstamo y otros factores relevantes.
 
 ## Estructura del Repositorio
 
@@ -17,6 +17,35 @@ Este proyecto implementa un modelo de machine learning (regresión logística) d
 | aprobacion_credito_ml.py  | Código final (implementación con y sin framework) |
 | Loan Approval with Machine Learning.pdf   | Reporte Final |
 
+## Instalación y Ejecución
 
+Para ejecutar este proyecto en tu entorno local, sigue estos pasos:
 
+### Prerrequisitos
+
+- pip (gestor de paquetes de Python)
+- Git (opcional, para clonar el repositorio)
+
+### Configuración del entorno
+
+1. Clona el repositorio (o descárgalo como ZIP):
+   ```bash
+   git clone https://github.com/tu-usuario/ML-Algorithms-from-scratch.git
+   cd ML-Algorithms-from-scratch
+   ```
+2. Crea un entorno virtual:
+En Windows:
+python -m venv venv
+venv\Scripts\activate
+
+En macOS/Linux:
+python3 -m venv venv
+source venv/bin/activate
+
+3. Instala las dependencias:
+pip install -r requirements.txt
+
+#### Ejecución:
+* Primer modelo de regresión logística: python main.py
+* Para ejecutar el análisis completo con implementación desde cero y Random Forest: python aprobacion_credito_ml.py
 
