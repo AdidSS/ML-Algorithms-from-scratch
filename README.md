@@ -1,4 +1,4 @@
-# Regresión Logística para Clasificación de Solicitudes de Préstamos Bancarios
+# Modelos de Machine Learning para Clasificación de Solicitudes de Préstamos Bancarios
 
 ![Presentando AIPB](assets/AIPB.png)
 
